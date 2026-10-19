@@ -43,6 +43,24 @@ const ERROR_MESSAGES = {
   over_request_rate_limit: 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.',
 };
 
+// Lee la dirección con la que volvió el usuario desde un correo de Supabase:
+//   ...#access_token=...&type=recovery      -> viene a crear una nueva contraseña
+//   ...#error=...&error_code=otp_expired    -> el enlace expiró o ya se usó
+export function parseAuthRedirect(hash) {
+  const params = new URLSearchParams((hash || '').replace(/^#/, ''));
+  const errorCode = params.get('error_code');
+  let errorMessage = null;
+  if (errorCode === 'otp_expired') {
+    errorMessage = 'El enlace del correo expiró o ya fue usado. Pide uno nuevo con "¿Olvidaste tu contraseña?".';
+  } else if (params.get('error')) {
+    errorMessage = 'No se pudo validar el enlace del correo. Pide uno nuevo e inténtalo otra vez.';
+  }
+  return {
+    isRecovery: params.get('type') === 'recovery' && params.has('access_token'),
+    errorMessage,
+  };
+}
+
 export function getAuthErrorMessage(error) {
   // El servidor no pudo enviar el correo (confirmación o recuperación)
   if (/error sending .* email/i.test(error?.message ?? '')) {

@@ -20,10 +20,11 @@ const EMPTY_FIELDS = {
   marketingConsent: false,
 };
 
-export function useAuthForm({ initialMode = 'login', onPasswordUpdated } = {}) {
+export function useAuthForm({ initialMode = 'login', initialError = null, onPasswordUpdated } = {}) {
   const [mode, setMode] = useState(initialMode);
   const [fields, setFields] = useState(EMPTY_FIELDS);
-  const [error, setError] = useState(null);
+  // initialError: por ejemplo, "el enlace del correo expiró"
+  const [error, setError] = useState(initialError);
   const [notice, setNotice] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const captcha = useCaptcha();
