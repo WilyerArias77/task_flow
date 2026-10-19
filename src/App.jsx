@@ -30,6 +30,7 @@ export default function App() {
     return (
       <AuthPage
         initialMode={auth.isRecovering ? 'reset' : 'login'}
+        initialError={auth.redirectError}
         onPasswordUpdated={auth.finishRecovery}
       />
     );
