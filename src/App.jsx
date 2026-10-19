@@ -4,13 +4,16 @@
 //   - sin sesión o cambiando clave   -> pantalla de acceso (AuthPage)
 //   - con sesión                     -> tablero de tareas (HomePage)
 import { useAuth } from './logic/hooks/useAuth.js';
+import { useAccount } from './logic/hooks/useAccount.js';
 import Layout from './components/Layout.jsx';
+import AccountDialog from './components/AccountDialog.jsx';
 import StatusMessage from './components/StatusMessage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
 import HomePage from './pages/HomePage.jsx';
 
 export default function App() {
   const auth = useAuth();
+  const account = useAccount();
 
   if (!auth.isConfigured) {
     return (
@@ -33,8 +36,11 @@ export default function App() {
   }
 
   return (
-    <Layout userName={auth.userName} onSignOut={auth.signOut}>
+    <Layout userName={auth.userName} onOpenAccount={account.open} onSignOut={auth.signOut}>
       <HomePage userId={auth.user.id} />
+      {account.isOpen && (
+        <AccountDialog account={account} userName={auth.userName} email={auth.user.email} />
+      )}
     </Layout>
   );
 }

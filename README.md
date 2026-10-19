@@ -14,8 +14,13 @@ Esta es la **versión punto cero**: el punto de partida del proyecto.
 - Permite marcar tareas como completadas con una casilla.
 - Permite **arrastrar y soltar** tarjetas (desde el ícono de puntos) entre "Pendientes" y "Completadas",
   y reordenarlas dentro de una misma columna.
-- **Gráfico de cumplimiento**: % cumplido de la lista actual, desglose cumplidas / pendientes / vencidas
-  y comparación entre diarias, mensuales y anuales.
+- **Tareas recurrentes (↻)**: al cumplirse, la tarea queda en "Completadas" hasta que pasa su fecha;
+  luego vuelve sola a "Pendientes" con la fecha del siguiente día, mes o año. Se puede desactivar en "Editar".
+- **Gráfico de cumplimiento por periodo**: hoy (diarias), este mes (mensuales) y este año (anuales), con
+  desglose cumplidas / pendientes / vencidas y comparación entre las tres listas.
+- **Historial de cumplimiento**: cada vez que se cumple una tarea queda registrado, con aviso
+  "A tiempo" o "Con retraso".
+- **Mi cuenta**: datos del usuario y opción de **eliminar la cuenta** con todos sus datos (Ley 1581).
 
 - **Cuentas de usuario** (correo y contraseña) con Supabase Auth: registro con aceptación de la
   política de datos, inicio de sesión, recuperación de contraseña y cierre de sesión.
@@ -26,9 +31,11 @@ Esta es la **versión punto cero**: el punto de partida del proyecto.
 
 Necesitas tener [Node.js](https://nodejs.org) instalado (versión 20 o superior).
 
-1. **Base de datos (una sola vez):** en tu proyecto de Supabase, abre *SQL Editor*, pega el contenido de
-   `supabase/migrations/20261019000000_taskflow_schema.sql` y ejecútalo. Crea las tablas
-   `taskflow_profiles` y `taskflow_tasks` con seguridad por fila (RLS).
+1. **Base de datos (una sola vez):** en tu proyecto de Supabase, abre *SQL Editor* y ejecuta, en orden,
+   los archivos de `supabase/migrations/`:
+   - `20261019000000_taskflow_schema.sql`: perfiles y tareas con seguridad por fila (RLS).
+   - `20261019010000_recurrencia_historial_cuenta_panel.sql`: tareas recurrentes, historial,
+     eliminar cuenta y panel de uso.
 2. **Direcciones permitidas:** en *Authentication → URL Configuration → Redirect URLs* agrega la
    dirección de la app (en desarrollo: `http://localhost:5173`).
 3. **Configuración local:** copia `.env.example` como `.env.local` y completa la *Project URL* y la
@@ -48,6 +55,15 @@ Otros comandos:
 ```bash
 npm run build    # genera la versión final en la carpeta dist/
 npm run preview  # muestra localmente la versión final
+```
+
+## Panel de uso (solo administrador)
+
+En Supabase → *SQL Editor* (no se publica en la API, nadie más puede verlo):
+
+```sql
+select * from taskflow_admin.resumen;   -- usuarios, activos 7/30 días, consentimientos
+select * from taskflow_admin.usuarios;  -- detalle por usuario: tareas, cumplidas, última actividad
 ```
 
 ## Tecnologías

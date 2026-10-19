@@ -2,13 +2,22 @@
 // Son funciones "puras": reciben datos y devuelven datos nuevos, sin tocar
 // la pantalla ni modificar nada por fuera. Por eso son fáciles de entender
 // y de probar. Ningún componente visual decide estas reglas: solo las usa.
-import { isDateReached, todayISO } from './dateRules.js';
+import {
+  addPeriodISO,
+  getPeriodRange,
+  isDateReached,
+  isInRange,
+  timestampToISODate,
+  todayISO,
+} from './dateRules.js';
 
 // Tipos de lista que el usuario puede elegir en el selector.
+//   - periodLabel: el periodo que mide el gráfico de cumplimiento
+//   - everyLabel:  cómo se describe la repetición de la tarea
 export const FREQUENCIES = [
-  { id: 'daily', label: 'Mis tareas diarias', shortLabel: 'Diarias' },
-  { id: 'monthly', label: 'Mis tareas mensuales', shortLabel: 'Mensuales' },
-  { id: 'yearly', label: 'Mis tareas anuales', shortLabel: 'Anuales' },
+  { id: 'daily', label: 'Mis tareas diarias', shortLabel: 'Diarias', periodLabel: 'hoy', everyLabel: 'cada día' },
+  { id: 'monthly', label: 'Mis tareas mensuales', shortLabel: 'Mensuales', periodLabel: 'este mes', everyLabel: 'cada mes' },
+  { id: 'yearly', label: 'Mis tareas anuales', shortLabel: 'Anuales', periodLabel: 'este año', everyLabel: 'cada año' },
 ];
 
 export const DEFAULT_FREQUENCY = 'daily';
@@ -39,6 +48,7 @@ export function createTask(tasks, { title, dueDate = null, frequency = DEFAULT_F
     description: '',
     dueDate,
     frequency,
+    recurring: true,
     completed: false,
     position: getNextPosition(tasks),
   };
@@ -116,25 +126,107 @@ export function moveTask(tasks, taskId, columnId, beforeTaskId = null) {
   return [...rest.slice(0, targetIndex), movedTask, ...rest.slice(targetIndex)];
 }
 
-// Estadísticas de cumplimiento de un grupo de tareas:
-//   cumplidas, pendientes a tiempo, vencidas y el % de cumplimiento.
-export function getComplianceStats(tasks, today = todayISO()) {
-  const completed = tasks.filter((task) => task.completed).length;
-  const overdue = tasks.filter((task) => isOverdue(task, today)).length;
-  const total = tasks.length;
+// ---------- Tareas recurrentes ----------
+
+// Regla de renovación: una tarea recurrente y cumplida, cuya fecha ya pasó,
+// vuelve a "Pendientes" con la próxima fecha de su ciclo (hoy o después).
+// Ejemplo mensual: vence el 10, se cumple el 9; el día 11 vuelve como
+// pendiente con fecha 10 del mes siguiente.
+export function getNextDueDate(task, today = todayISO()) {
+  let next = addPeriodISO(task.dueDate, task.frequency);
+  while (next < today) next = addPeriodISO(next, task.frequency);
+  return next;
+}
+
+export function needsRenewal(task, today = todayISO()) {
+  return task.recurring && task.completed && Boolean(task.dueDate) && task.dueDate < today;
+}
+
+// Devuelve los cambios a aplicar: [{ id, changes: { completed, dueDate } }]
+export function getRenewals(tasks, today = todayISO()) {
+  return tasks
+    .filter((task) => needsRenewal(task, today))
+    .map((task) => ({
+      id: task.id,
+      changes: { completed: false, dueDate: getNextDueDate(task, today) },
+    }));
+}
+
+export function applyRenewals(tasks, renewals) {
+  const byId = new Map(renewals.map((renewal) => [renewal.id, renewal.changes]));
+  return tasks.map((task) => (byId.has(task.id) ? { ...task, ...byId.get(task.id) } : task));
+}
+
+// ---------- Historial de cumplimiento ----------
+
+// Registro que se guarda cada vez que una tarea pasa a "cumplida".
+export function createCompletion(task, now = new Date()) {
+  return {
+    id: crypto.randomUUID(),
+    taskId: task.id,
+    taskTitle: task.title,
+    frequency: task.frequency,
+    dueDate: task.dueDate,
+    completedAt: now.toISOString(),
+  };
+}
+
+// Regla: a tiempo si se cumplió el día de su fecha o antes (o si no tenía fecha).
+export function isCompletedOnTime(completion) {
+  return !completion.dueDate || timestampToISODate(completion.completedAt) <= completion.dueDate;
+}
+
+// Si el usuario desmarca una tarea, se borra el registro de ESE ciclo (misma fecha).
+export function isSameCycle(completion, task) {
+  return completion.taskId === task.id && completion.dueDate === task.dueDate;
+}
+
+// Últimos cumplimientos de una lista, del más reciente al más antiguo.
+export function getHistory(completions, frequencyId, limit = 30) {
+  return completions
+    .filter((completion) => completion.frequency === frequencyId)
+    .sort((a, b) => b.completedAt.localeCompare(a.completedAt))
+    .slice(0, limit)
+    .map((completion) => ({ ...completion, onTime: isCompletedOnTime(completion) }));
+}
+
+// ---------- Cumplimiento por periodo ----------
+
+// Mide el periodo actual de la lista (hoy / este mes / este año):
+//   - Cumplidas: registros del historial cuya fecha cae en el periodo.
+//   - Vencidas: tareas pendientes cuya fecha ya llegó (de cualquier periodo:
+//     siguen siendo una obligación sin cumplir).
+//   - Pendientes a tiempo: tareas pendientes con fecha futura dentro del
+//     periodo, o sin fecha.
+export function getPeriodStats(tasks, completions, frequencyId, today = todayISO()) {
+  const range = getPeriodRange(frequencyId, today);
+
+  const completed = completions.filter(
+    (completion) =>
+      completion.frequency === frequencyId &&
+      isInRange(completion.dueDate ?? timestampToISODate(completion.completedAt), range)
+  ).length;
+
+  const open = getTasksByFrequency(tasks, frequencyId).filter((task) => !task.completed);
+  const overdue = open.filter((task) => isOverdue(task, today)).length;
+  const pending = open.filter(
+    (task) => !isOverdue(task, today) && (!task.dueDate || isInRange(task.dueDate, range))
+  ).length;
+
+  const total = completed + pending + overdue;
   return {
     total,
     completed,
+    pending,
     overdue,
-    pending: total - completed - overdue,
     rate: total === 0 ? 0 : Math.round((completed / total) * 100),
   };
 }
 
-// Estadísticas de cumplimiento para cada tipo de lista (para comparar).
-export function getComplianceByFrequency(tasks, today = todayISO()) {
+// El mismo cálculo para las tres listas (para compararlas).
+export function getPeriodStatsByFrequency(tasks, completions, today = todayISO()) {
   return FREQUENCIES.map((frequency) => ({
     ...frequency,
-    ...getComplianceStats(getTasksByFrequency(tasks, frequency.id), today),
+    ...getPeriodStats(tasks, completions, frequency.id, today),
   }));
 }

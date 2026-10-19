@@ -3,6 +3,7 @@
 //   - normal:   agarradera para arrastrar, casilla de completada y campo de fecha.
 //   - eliminar: se puede seleccionar con un clic (varias a la vez).
 //   - editar:   se elige con un clic y se abre el formulario de edición.
+// El ícono ↻ indica que la tarea se repite (cada día, mes o año).
 // Los colores (rojo si está vencida, negro si está cumplida) los pone el CSS
 // a partir de las clases; si está vencida o no lo decide la lógica (isOverdue).
 import { isoToDisplay } from '../logic/rules/dateRules.js';
@@ -32,6 +33,7 @@ export default function TaskCard({
   }
 
   const isNormal = selection.mode === 'normal';
+  const repeatLabel = frequencies.find((f) => f.id === task.frequency)?.everyLabel;
   const classes = [
     'task-card',
     task.completed ? 'task-card--done' : '',
@@ -74,7 +76,14 @@ export default function TaskCard({
       )}
 
       <div className="task-card__body">
-        <p className="task-card__title">{task.title}</p>
+        <p className="task-card__title">
+          {task.recurring && (
+            <span className="task-card__repeat" title={`Se repite ${repeatLabel}`} aria-label={`Se repite ${repeatLabel}`}>
+              ↻
+            </span>
+          )}
+          {task.title}
+        </p>
         {task.description && (
           <p className="task-card__description">{task.description}</p>
         )}

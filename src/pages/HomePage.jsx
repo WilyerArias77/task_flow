@@ -11,6 +11,7 @@ import TaskToolbar from '../components/TaskToolbar.jsx';
 import SelectionBanner from '../components/SelectionBanner.jsx';
 import TaskBoard from '../components/TaskBoard.jsx';
 import ErrorBanner from '../components/ErrorBanner.jsx';
+import HistoryPanel from '../components/HistoryPanel.jsx';
 
 export default function HomePage({ userId }) {
   const tasks = useTasks(userId);
@@ -43,13 +44,13 @@ export default function HomePage({ userId }) {
       <div className="page__header">
         <h2 className="page__title">{tasks.currentFrequency.label}</h2>
         <p className="page__subtitle">
-          {tasks.stats.completed} de {tasks.stats.total} completadas · Arrastra las
-          tarjetas desde los puntos para moverlas
+          {tasks.stats.completed} de {tasks.stats.total} cumplidas {tasks.currentFrequency.periodLabel} ·
+          Las tareas con ↻ se renuevan solas · Arrastra las tarjetas desde los puntos
         </p>
       </div>
 
       <ComplianceChart
-        title={tasks.currentFrequency.label}
+        frequency={tasks.currentFrequency}
         stats={tasks.stats}
         statsByFrequency={tasks.statsByFrequency}
       />
@@ -71,6 +72,8 @@ export default function HomePage({ userId }) {
         onToggleTask={tasks.toggleTask}
         onDueDateChange={(taskId, dueDate) => tasks.updateTask(taskId, { dueDate })}
       />
+
+      <HistoryPanel items={tasks.history} />
     </section>
   );
 }

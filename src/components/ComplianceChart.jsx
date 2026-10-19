@@ -1,5 +1,6 @@
-// GRÁFICO DE CUMPLIMIENTO.
-// Muestra tres cosas:
+// GRÁFICO DE CUMPLIMIENTO DEL PERIODO.
+// Mide el periodo actual de cada lista: hoy (diarias), este mes (mensuales)
+// y este año (anuales). Muestra tres cosas:
 //   1. El % de cumplimiento de la lista que se está viendo (número grande).
 //   2. Una barra dividida en cumplidas / pendientes a tiempo / vencidas.
 //   3. Una comparación del % de cumplimiento de diarias, mensuales y anuales.
@@ -7,13 +8,13 @@
 // El tamaño de cada barra se pasa como dato (--value) y el CSS lo dibuja.
 import { getChartSegments } from '../logic/rules/chartRules.js';
 
-export default function ComplianceChart({ title, stats, statsByFrequency }) {
+export default function ComplianceChart({ frequency, stats, statsByFrequency }) {
   const segments = getChartSegments(stats);
 
   return (
     <section className="stats" aria-label="Cumplimiento de tareas">
       <div className="stats__summary">
-        <p className="stats__label">Cumplimiento · {title}</p>
+        <p className="stats__label">Cumplimiento {frequency.periodLabel}</p>
         <p className="stats__value">{stats.rate}%</p>
         <p className="stats__detail">
           {stats.completed} de {stats.total} tareas cumplidas
@@ -22,7 +23,7 @@ export default function ComplianceChart({ title, stats, statsByFrequency }) {
 
       <div className="stats__breakdown">
         {stats.total === 0 ? (
-          <p className="stats__empty">Esta lista todavía no tiene tareas.</p>
+          <p className="stats__empty">No hay tareas para {frequency.periodLabel}.</p>
         ) : (
           <div className="stacked-bar" role="img" aria-label={segments.map((s) => `${s.label}: ${s.value}`).join(', ')}>
             {segments
@@ -53,7 +54,10 @@ export default function ComplianceChart({ title, stats, statsByFrequency }) {
         <ul className="compare">
           {statsByFrequency.map((item) => (
             <li key={item.id} className="compare__row">
-              <span className="compare__name">{item.shortLabel}</span>
+              <span className="compare__name">
+                {item.shortLabel}
+                <span className="compare__period">{item.periodLabel}</span>
+              </span>
               <span className="compare__track">
                 <span
                   className="compare__fill"

@@ -1,6 +1,7 @@
 // FORMULARIO DE EDICIÓN de una tarea.
 // Aparece dentro de la tarjeta elegida en el modo "Editar".
-// Permite sobrescribir título, descripción, fecha y lista (diaria/mensual/anual).
+// Permite sobrescribir título, descripción, fecha, lista (diaria/mensual/anual)
+// y si la tarea se repite automáticamente.
 // Los datos en edición y la validación viven en useEditTaskForm.
 import { useEditTaskForm } from '../logic/hooks/useEditTaskForm.js';
 import DateField from './DateField.jsx';
@@ -56,6 +57,18 @@ export default function TaskEditForm({ task, frequencies, onSave, onCancel }) {
           </select>
         </label>
       </div>
+
+      <label className="edit-form__check">
+        <input
+          type="checkbox"
+          checked={form.draft.recurring}
+          onChange={form.handleRecurringChange}
+        />
+        <span>
+          Repetir automáticamente{' '}
+          {frequencies.find((f) => f.id === form.draft.frequency)?.everyLabel}
+        </span>
+      </label>
 
       <div className="edit-form__actions">
         <button className="button button--secondary" type="button" onClick={onCancel}>

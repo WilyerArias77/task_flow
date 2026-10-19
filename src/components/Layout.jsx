@@ -3,10 +3,10 @@
 // y el contenido de la página debajo. No contiene lógica.
 import Header from './Header.jsx';
 
-export default function Layout({ userName, onSignOut, children }) {
+export default function Layout({ userName, onOpenAccount, onSignOut, children }) {
   return (
     <div className="layout">
-      <Header userName={userName} onSignOut={onSignOut} />
+      <Header userName={userName} onOpenAccount={onOpenAccount} onSignOut={onSignOut} />
       <main className="layout__content">{children}</main>
     </div>
   );

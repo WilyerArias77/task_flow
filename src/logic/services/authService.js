@@ -49,6 +49,15 @@ export async function requestPasswordReset(email) {
   if (error) throw error;
 }
 
+// Borra la cuenta del usuario y todos sus datos (función segura en la base
+// de datos). Después cierra la sesión solo en este navegador, porque la
+// cuenta ya no existe en el servidor.
+export async function deleteMyAccount() {
+  const { error } = await supabase.rpc('taskflow_delete_my_account');
+  if (error) throw error;
+  await supabase.auth.signOut({ scope: 'local' });
+}
+
 export async function updatePassword(password) {
   const { error } = await supabase.auth.updateUser({ password });
   if (error) throw error;

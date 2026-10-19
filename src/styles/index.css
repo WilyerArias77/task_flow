@@ -9,3 +9,4 @@
 @import './components.css'; /* 4. piezas: formulario, columnas, tarjetas */
 @import './chart.css';      /* 5. gráfico de cumplimiento */
 @import './auth.css';       /* 6. acceso, carga, usuario y avisos */
+@import './history.css';    /* 7. historial, "Mi cuenta" y tareas recurrentes */

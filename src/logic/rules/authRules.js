@@ -43,5 +43,9 @@ const ERROR_MESSAGES = {
 };
 
 export function getAuthErrorMessage(error) {
+  // El servidor no pudo enviar el correo (confirmación o recuperación)
+  if (/error sending .* email/i.test(error?.message ?? '')) {
+    return 'No pudimos enviarte el correo en este momento. Inténtalo de nuevo más tarde o escríbenos a wilyer.arias@growingsolutions.online.';
+  }
   return ERROR_MESSAGES[error?.code] || 'Ocurrió un error. Inténtalo de nuevo en unos minutos.';
 }
