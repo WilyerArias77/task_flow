@@ -22,6 +22,7 @@ export function useCaptcha() {
         widgetIdRef.current = turnstile.render(containerRef.current, {
           sitekey: captchaSiteKey,
           language: 'es',
+          theme: 'light', // combina con la tarjeta blanca de la pantalla de acceso
           callback: (newToken) => setToken(newToken),
           'expired-callback': () => setToken(null),
           'error-callback': () => setToken(null),
