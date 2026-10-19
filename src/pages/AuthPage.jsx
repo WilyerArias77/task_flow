@@ -99,6 +99,17 @@ export default function AuthPage({ initialMode, onPasswordUpdated }) {
             </div>
           )}
 
+          {form.captcha.enabled && (
+            <div className={`auth__captcha ${form.showCaptcha ? '' : 'auth__captcha--hidden'}`}>
+              <div ref={form.captcha.containerRef} />
+              {form.captcha.loadError && (
+                <p className="field__hint">
+                  No se pudo cargar la verificación de seguridad. Revisa tu conexión y recarga la página.
+                </p>
+              )}
+            </div>
+          )}
+
           {form.error && <p className="auth__message auth__message--error" role="alert">{form.error}</p>}
           {form.notice && <p className="auth__message auth__message--notice" role="status">{form.notice}</p>}
 

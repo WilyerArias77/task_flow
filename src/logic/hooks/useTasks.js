@@ -38,6 +38,8 @@ import {
 
 const SAVE_ERROR = 'No se pudo guardar el último cambio. Revisa tu conexión e inténtalo de nuevo.';
 const LOAD_ERROR = 'No se pudieron cargar tus tareas. Revisa tu conexión y recarga la página.';
+// La base de datos limita cada cuenta a 1.000 tareas (protección anti-abuso)
+const LIMIT_ERROR = 'Llegaste al máximo de 1.000 tareas. Elimina las que ya no uses para crear nuevas.';
 
 // Historial que se carga: el último año (cubre el periodo anual y el historial visible)
 const HISTORY_DAYS = 366;
@@ -89,8 +91,8 @@ export function useTasks(userId) {
   const persist = async (operation) => {
     try {
       await operation();
-    } catch {
-      setError(SAVE_ERROR);
+    } catch (err) {
+      setError(err?.message?.includes('TASKFLOW_LIMIT') ? LIMIT_ERROR : SAVE_ERROR);
       load();
     }
   };

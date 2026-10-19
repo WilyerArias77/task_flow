@@ -19,12 +19,14 @@ export function onAuthChange(callback) {
   return () => data.subscription.unsubscribe();
 }
 
-export async function signUp({ email, password, fullName, company, marketingConsent }) {
+// captchaToken: token de Cloudflare Turnstile (lo verifica Supabase)
+export async function signUp({ email, password, fullName, company, marketingConsent, captchaToken }) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: appUrl(),
+      captchaToken,
       // Estos datos los usa la base de datos para crear el perfil
       data: { full_name: fullName, company, marketing_consent: marketingConsent },
     },
@@ -33,8 +35,12 @@ export async function signUp({ email, password, fullName, company, marketingCons
   return data;
 }
 
-export async function signIn({ email, password }) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+export async function signIn({ email, password, captchaToken }) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: { captchaToken },
+  });
   if (error) throw error;
   return data;
 }
@@ -44,8 +50,11 @@ export async function signOut() {
   if (error) throw error;
 }
 
-export async function requestPasswordReset(email) {
-  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: appUrl() });
+export async function requestPasswordReset(email, captchaToken) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: appUrl(),
+    captchaToken,
+  });
   if (error) throw error;
 }
 

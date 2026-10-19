@@ -39,6 +39,7 @@ const ERROR_MESSAGES = {
   weak_password: `La contraseña es muy débil. Usa al menos ${PASSWORD_MIN_LENGTH} caracteres.`,
   same_password: 'La nueva contraseña debe ser distinta a la anterior.',
   over_email_send_rate_limit: 'Se enviaron demasiados correos. Espera unos minutos e inténtalo de nuevo.',
+  captcha_failed: 'La verificación de seguridad falló o expiró. Márcala de nuevo e inténtalo otra vez.',
   over_request_rate_limit: 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.',
 };
 
