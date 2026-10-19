@@ -2,16 +2,11 @@
 // Recibe todo ya preparado desde la página y solo lo reparte.
 import TaskColumn from './TaskColumn.jsx';
 
-export default function TaskBoard({ columns, onToggleTask, dragAndDrop }) {
+export default function TaskBoard({ columns, ...boardProps }) {
   return (
     <div className="board">
       {columns.map((column) => (
-        <TaskColumn
-          key={column.id}
-          column={column}
-          onToggleTask={onToggleTask}
-          dragAndDrop={dragAndDrop}
-        />
+        <TaskColumn key={column.id} column={column} {...boardProps} />
       ))}
     </div>
   );

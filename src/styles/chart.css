@@ -1,0 +1,164 @@
+/*
+  ESTILOS DEL GRÁFICO DE CUMPLIMIENTO (ComplianceChart).
+  Colores por estado: verde = cumplidas, azul = pendientes a tiempo,
+  rojo = vencidas (paleta validada para personas con daltonismo).
+  El tamaño de cada barra llega como dato en la variable --value;
+  aquí solo se decide cómo se ve.
+*/
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+@media (min-width: 860px) {
+  .stats {
+    grid-template-columns: auto 1.4fr 1fr;
+    align-items: center;
+  }
+}
+
+.stats__label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Número grande con el % de cumplimiento */
+.stats__value {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.stats__detail {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.stats__empty {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ---------- Barra dividida por estados ---------- */
+.stacked-bar {
+  display: flex;
+  gap: 2px;
+  height: 16px;
+}
+
+.stacked-bar__segment {
+  position: relative;
+  flex: var(--value) 1 0;
+  min-width: 6px;
+  border-radius: 4px;
+}
+
+.stacked-bar__segment--completed { background: var(--color-done); }
+.stacked-bar__segment--pending { background: var(--color-primary); }
+.stacked-bar__segment--overdue { background: var(--color-overdue); }
+
+/* Leyenda */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend__swatch--completed { background: var(--color-done); }
+.legend__swatch--pending { background: var(--color-primary); }
+.legend__swatch--overdue { background: var(--color-overdue); }
+
+.legend__value {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Comparación por tipo de lista ---------- */
+.compare {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.compare__row {
+  display: grid;
+  grid-template-columns: 76px 1fr 40px;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.compare__name {
+  color: var(--color-text);
+}
+
+.compare__track {
+  position: relative;
+  height: 10px;
+  border-radius: 4px;
+  background: var(--color-column);
+}
+
+.compare__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--value) * 1%);
+  border-radius: 4px;
+  background: var(--color-done);
+}
+
+.compare__value {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Tooltip al pasar el mouse por una barra ---------- */
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: var(--color-navy);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.compare__fill[data-tooltip]:hover::after {
+  left: 100%;
+}

@@ -5,11 +5,17 @@ Esta es la **versión punto cero**: el punto de partida del proyecto.
 
 ## ¿Qué hace hoy?
 
-- Muestra una lista de tareas de ejemplo (datos mock, sin base de datos).
-- Permite crear tareas nuevas.
+- Muestra procesos administrativos y contables de ejemplo (datos mock, sin base de datos).
+- Selector de listas: **Mis tareas diarias**, **mensuales** y **anuales**.
+- Cada tarea tiene una **fecha límite** en formato `dd-mm-aaaa` (se escribe o se elige en un calendario).
+- Si la fecha ya llegó y la tarea sigue pendiente, **todo su texto se pone en rojo** y aparece la etiqueta "Vencida".
+  Al marcarla como cumplida, el texto vuelve a negro.
+- Permite crear, **editar** (título, descripción, fecha y lista) y **eliminar** tareas (una o varias a la vez).
 - Permite marcar tareas como completadas con una casilla.
-- Permite **arrastrar y soltar** tarjetas entre "Pendientes" y "Completadas",
+- Permite **arrastrar y soltar** tarjetas (desde el ícono de puntos) entre "Pendientes" y "Completadas",
   y reordenarlas dentro de una misma columna.
+- **Gráfico de cumplimiento**: % cumplido de la lista actual, desglose cumplidas / pendientes / vencidas
+  y comparación entre diarias, mensuales y anuales.
 
 > Los cambios se pierden al recargar la página: todavía no hay backend.
 
@@ -49,8 +55,9 @@ src/
 ├── components/         Piezas visuales (sin reglas de negocio)
 ├── logic/              TODA la lógica de la app
 │   ├── data/           Datos de ejemplo (mock)
-│   ├── rules/          Reglas de negocio (funciones puras)
-│   └── hooks/          Estado y comportamiento (tareas, formulario, arrastre)
+│   ├── rules/          Reglas de negocio (tareas, fechas, gráfico)
+│   └── hooks/          Estado y comportamiento (tareas, formularios, fechas,
+│                       modos editar/eliminar, arrastre)
 ├── styles/             TODOS los estilos de la app
 └── assets/             Imágenes e íconos
 ```

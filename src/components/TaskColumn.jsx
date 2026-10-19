@@ -1,17 +1,16 @@
-// COLUMNA del tablero (ej: "Pendientes" o "Completadas").
-// Pinta su título, el contador y sus tarjetas. También es una zona donde
-// se pueden soltar tarjetas: las props de arrastre vienen del hook.
+// COLUMNA del tablero ("Pendientes" o "Completadas").
+// Pinta su título, el contador y sus tarjetas. En modo normal también es una
+// zona donde se pueden soltar tarjetas: las props de arrastre vienen del hook.
 import TaskCard from './TaskCard.jsx';
 
-export default function TaskColumn({ column, onToggleTask, dragAndDrop }) {
-  const { overColumnId, draggingId, getColumnProps, getCardProps } = dragAndDrop;
-  const isOver = overColumnId === column.id;
+export default function TaskColumn({ column, ...cardProps }) {
+  const { selection, dragAndDrop } = cardProps;
+  const isNormal = selection.mode === 'normal';
+  const isOver = isNormal && dragAndDrop.overColumnId === column.id;
+  const dropProps = isNormal ? dragAndDrop.getColumnProps(column.id) : {};
 
   return (
-    <div
-      className={`column ${isOver ? 'column--over' : ''}`}
-      {...getColumnProps(column.id)}
-    >
+    <div className={`column ${isOver ? 'column--over' : ''}`} {...dropProps}>
       <div className="column__header">
         <h3 className="column__title">{column.title}</h3>
         <span className="column__count">{column.tasks.length}</span>
@@ -19,18 +18,14 @@ export default function TaskColumn({ column, onToggleTask, dragAndDrop }) {
 
       <ul className="column__list">
         {column.tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            isDragging={draggingId === task.id}
-            onToggle={onToggleTask}
-            dragProps={getCardProps(task.id, column.id)}
-          />
+          <TaskCard key={task.id} task={task} columnId={column.id} {...cardProps} />
         ))}
       </ul>
 
       {column.tasks.length === 0 && (
-        <p className="column__empty">Suelta una tarea aquí</p>
+        <p className="column__empty">
+          {isNormal ? 'Suelta una tarea aquí' : 'No hay tareas en esta columna'}
+        </p>
       )}
     </div>
   );

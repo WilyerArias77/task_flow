@@ -3,10 +3,13 @@
 // Este hook entrega "props" listas para pegar en las tarjetas y columnas.
 // Los componentes no saben CÓMO funciona el arrastre: solo reciben estas props.
 //
+// Las tarjetas se arrastran desde su "agarradera" (el ícono de puntos) para
+// que se pueda escribir en el campo de fecha sin arrastrar la tarjeta.
+//
 // Flujo:
-//   1. El usuario empieza a arrastrar una tarjeta  -> guardamos su id.
-//   2. Pasa por encima de una columna               -> la marcamos como "destino".
-//   3. Suelta sobre una tarjeta o sobre la columna  -> llamamos a onMove(...).
+//   1. El usuario empieza a arrastrar una agarradera -> guardamos el id.
+//   2. Pasa por encima de una columna                -> la marcamos como "destino".
+//   3. Suelta sobre una tarjeta o sobre la columna   -> llamamos a onMove(...).
 import { useState } from 'react';
 
 export function useDragAndDrop(onMove) {
@@ -18,15 +21,21 @@ export function useDragAndDrop(onMove) {
     setOverColumnId(null);
   };
 
-  // Props para cada tarjeta: se puede arrastrar y también recibir otra encima.
-  const getCardProps = (taskId, columnId) => ({
+  // Props para la agarradera: inicia el arrastre de toda la tarjeta.
+  const getHandleProps = (taskId) => ({
     draggable: true,
     onDragStart: (event) => {
       event.dataTransfer.setData('text/plain', taskId);
       event.dataTransfer.effectAllowed = 'move';
+      const card = event.currentTarget.closest('li');
+      if (card) event.dataTransfer.setDragImage(card, 24, 24);
       setDraggingId(taskId);
     },
     onDragEnd: reset,
+  });
+
+  // Props para cada tarjeta: puede recibir otra tarjeta encima.
+  const getCardDropProps = (taskId, columnId) => ({
     onDragOver: (event) => event.preventDefault(), // permite soltar aquí
     onDrop: (event) => {
       event.preventDefault();
@@ -58,7 +67,8 @@ export function useDragAndDrop(onMove) {
   return {
     draggingId,
     overColumnId,
-    getCardProps,
+    getHandleProps,
+    getCardDropProps,
     getColumnProps,
   };
 }

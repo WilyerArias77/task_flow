@@ -18,7 +18,12 @@
 
   /* Colores de marca (logo) */
   --color-navy: #0b2a4a;
-  --color-done: #7cb342;
+  --color-done: #5e9e2e;
+
+  /* Estados de las tareas (también usados en el gráfico) */
+  --color-overdue: #d92d20;
+  --color-overdue-bg: #fef3f2;
+  --color-overdue-border: rgba(217, 45, 32, 0.35);
 
   /* Fondos y superficies */
   --color-bg: #f8f9ff;

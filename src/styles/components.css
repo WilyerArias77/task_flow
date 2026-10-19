@@ -5,9 +5,9 @@
   así es fácil saber a qué pieza pertenece cada regla.
 */
 
-/* ---------- Botón (estilo "btn-primary" del sitio web) ---------- */
+/* ---------- Botones (estilo "btn-primary" del sitio web y variantes) ---------- */
 .button {
-  padding: 12px 24px;
+  padding: 11px 22px;
   border: none;
   border-radius: var(--radius-sm);
   background: var(--gradient-primary);
@@ -17,8 +17,9 @@
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  white-space: nowrap;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.3s;
+  transition: transform 0.2s, box-shadow 0.3s, background 0.2s, color 0.2s;
 }
 
 .button:hover:not(:disabled) {
@@ -32,18 +33,123 @@
   cursor: not-allowed;
 }
 
-/* ---------- Formulario (TaskForm) ---------- */
-.task-form {
+/* Secundario: borde gris, como "btn-ghost" del sitio */
+.button--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border);
+  box-shadow: none;
+}
+
+.button--secondary:hover:not(:disabled) {
+  border-color: var(--color-primary-light);
+  color: var(--color-primary-light);
+  box-shadow: none;
+}
+
+/* Botón "Eliminar" de la barra: contorno rojo */
+.button--danger-outline {
+  background: var(--color-surface);
+  color: var(--color-overdue);
+  border: 1.5px solid var(--color-overdue-border);
+  box-shadow: none;
+}
+
+.button--danger-outline:hover:not(:disabled) {
+  background: var(--color-overdue-bg);
+  box-shadow: none;
+}
+
+/* Confirmar eliminación: rojo sólido */
+.button--danger {
+  background: var(--color-overdue);
+  box-shadow: 0 4px 16px rgba(217, 45, 32, 0.25);
+}
+
+.button--danger:hover:not(:disabled) {
+  box-shadow: 0 8px 24px rgba(217, 45, 32, 0.35);
+}
+
+/* ---------- Selector de lista (FrequencySelector) ---------- */
+.selector {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: 12px;
+  background: var(--color-column);
+}
+
+.selector__option {
+  padding: 9px 18px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.selector__option:hover {
+  color: var(--color-primary);
+}
+
+.selector__option--active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------- Barra Editar / Eliminar (TaskToolbar) ---------- */
+.toolbar {
   display: flex;
   gap: var(--space-2);
-  width: 100%;
-  max-width: 440px;
+}
+
+/* ---------- Aviso del modo activo (SelectionBanner) ---------- */
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-primary-border);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-glow);
+}
+
+.banner--delete {
+  border-color: var(--color-overdue-border);
+  background: var(--color-overdue-bg);
+}
+
+.banner__text {
+  font-weight: 600;
+}
+
+.banner__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* ---------- Formulario "Agregar" (TaskForm) ---------- */
+.task-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  flex: 1;
+  max-width: 640px;
 }
 
 .task-form__input {
   flex: 1;
-  min-width: 0;
-  padding: 12px var(--space-4);
+  min-width: 200px;
+  padding: 10px var(--space-4);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
@@ -56,6 +162,72 @@
   outline: none;
   border-color: var(--color-primary-light);
   box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.task-form .date-field {
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Campo de fecha (DateField) ---------- */
+.date-field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.date-field:focus-within {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.date-field--invalid,
+.date-field--invalid:focus-within {
+  border-color: var(--color-overdue);
+}
+
+.date-field__input {
+  width: 98px;
+  padding: 7px 0 7px 10px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  color: inherit;
+}
+
+.date-field__input:focus {
+  outline: none;
+}
+
+.date-field__button {
+  display: flex;
+  padding: 6px 9px 6px 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.date-field__button:hover {
+  color: var(--color-primary);
+}
+
+/* El calendario nativo queda invisible; el botón lo abre */
+.date-field__picker {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- Columna (TaskColumn) ---------- */
@@ -116,24 +288,39 @@
 /* ---------- Tarjeta (TaskCard) ---------- */
 .task-card {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
-  gap: var(--space-3);
-  padding: 14px var(--space-4);
+  gap: var(--space-2) var(--space-3);
+  padding: 14px var(--space-4) 14px var(--space-3);
   border: 1px solid var(--color-border);
   border-left: 3px solid var(--color-primary);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
-  cursor: grab;
-  transition: box-shadow 0.2s ease, transform 0.2s ease, opacity 0.15s ease;
+  color: var(--color-text);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, opacity 0.15s ease,
+    border-color 0.2s ease, background 0.2s ease;
 }
 
 .task-card:hover {
-  transform: translateY(-1px);
   box-shadow: var(--shadow-hover);
 }
 
-.task-card:active {
+/* Agarradera para arrastrar */
+.task-card__handle {
+  display: flex;
+  padding: 3px 2px;
+  color: var(--color-text-muted);
+  fill: currentColor;
+  opacity: 0.55;
+  cursor: grab;
+}
+
+.task-card__handle:hover {
+  opacity: 1;
+}
+
+.task-card__handle:active {
   cursor: grabbing;
 }
 
@@ -152,7 +339,7 @@
 
 .task-card__body {
   flex: 1;
-  min-width: 0;
+  min-width: 160px;
 }
 
 .task-card__title {
@@ -166,12 +353,153 @@
   font-size: var(--font-size-sm);
 }
 
-/* Tarea completada: borde verde del logo, texto tachado y atenuado */
+.task-card__date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+
+.task-card__date-text {
+  padding: 7px 0;
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.task-card__badge {
+  padding: 1px 8px;
+  border-radius: 100px;
+  background: var(--color-overdue-bg);
+  border: 1px solid var(--color-overdue-border);
+  color: var(--color-overdue);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Tarea VENCIDA (fecha cumplida y sin completar): todo el texto en rojo */
+.task-card--overdue {
+  border-left-color: var(--color-overdue);
+}
+
+.task-card--overdue .task-card__title,
+.task-card--overdue .task-card__description,
+.task-card--overdue .task-card__date-text,
+.task-card--overdue .date-field__input {
+  color: var(--color-overdue);
+}
+
+/* Tarea CUMPLIDA: borde verde del logo y todo el texto en negro */
 .task-card--done {
   border-left-color: var(--color-done);
 }
 
-.task-card--done .task-card__title {
-  text-decoration: line-through;
+.task-card--done .task-card__title,
+.task-card--done .task-card__description,
+.task-card--done .task-card__date-text,
+.task-card--done .date-field__input {
+  color: #000000;
+}
+
+/* Modos "Editar" / "Eliminar": la tarjeta se puede elegir con clic */
+.task-card--selectable {
+  cursor: pointer;
+}
+
+.task-card--selectable:hover {
+  transform: translateY(-1px);
+}
+
+.task-card--selectable:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+/* Círculo de selección que reemplaza la casilla en esos modos */
+.task-card__marker {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.task-card--edit:hover .task-card__marker {
+  border-color: var(--color-primary-light);
+}
+
+.task-card--delete.task-card--selected {
+  border-color: var(--color-overdue);
+  background: var(--color-overdue-bg);
+}
+
+.task-card--delete.task-card--selected .task-card__marker {
+  border-color: var(--color-overdue);
+  background: var(--color-overdue);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+
+/* Tarjeta abierta para editar */
+.task-card--editing {
+  border-color: var(--color-primary-border);
+  border-left-color: var(--color-primary);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ---------- Formulario de edición (TaskEditForm) ---------- */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.edit-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.edit-form__label {
   color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.edit-form__input {
+  padding: 8px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  color: inherit;
+}
+
+.edit-form__input:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.edit-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.edit-form__row .date-field {
+  align-self: flex-start;
+}
+
+.edit-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
 }

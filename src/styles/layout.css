@@ -62,14 +62,19 @@
   font-size: var(--font-size-sm);
 }
 
-/* Cabecera de la página: título a la izquierda, formulario a la derecha */
+/* Cabecera de la página: título de la lista y resumen */
 .page__header {
+  margin: var(--space-6) 0 var(--space-4);
+}
+
+/* Fila de acciones: formulario "Agregar" a la izquierda, Editar/Eliminar a la derecha */
+.actions {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  gap: var(--space-3);
+  margin: var(--space-6) 0 var(--space-4);
 }
 
 .page__title {
