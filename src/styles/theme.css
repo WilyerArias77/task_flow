@@ -1,0 +1,56 @@
+/*
+  TEMA VISUAL (design tokens).
+  Aquí se definen los colores, espacios, bordes y fuentes de toda la app.
+  Los valores vienen de la identidad de Growing Solutions:
+    - azules, fondos y tipografía Inter: sitio web growingsolutions.online
+    - verde de "completado": logo de Growing Solutions
+  Si quieres cambiar el "look" de TaskFlow, empieza por este archivo:
+  cambiar un valor aquí lo cambia en todos lados.
+*/
+:root {
+  /* Colores de marca (sitio web) */
+  --color-primary: #0a2fd4;
+  --color-primary-light: #0d3cff;
+  --color-primary-dim: #0020b0;
+  --gradient-primary: linear-gradient(135deg, #0020b0 0%, #0a2fd4 50%, #0d3cff 100%);
+  --color-primary-glow: rgba(13, 60, 255, 0.10);
+  --color-primary-border: rgba(13, 60, 255, 0.22);
+
+  /* Colores de marca (logo) */
+  --color-navy: #0b2a4a;
+  --color-done: #7cb342;
+
+  /* Fondos y superficies */
+  --color-bg: #f8f9ff;
+  --color-surface: #ffffff;
+  --color-column: #eef0f8;
+  --color-border: rgba(219, 219, 224, 0.9);
+
+  /* Texto */
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+
+  /* Espaciado */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Bordes y sombras */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --shadow-card: 0 1px 12px rgba(0, 0, 0, 0.07);
+  --shadow-hover: 0 8px 24px rgba(13, 60, 255, 0.12);
+  --shadow-button: 0 4px 20px rgba(13, 60, 255, 0.3);
+  --shadow-button-hover: 0 8px 32px rgba(13, 60, 255, 0.45);
+
+  /* Tipografía */
+  --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 0.9375rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.75rem;
+}

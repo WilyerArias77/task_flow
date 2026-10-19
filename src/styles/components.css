@@ -1,0 +1,177 @@
+/*
+  ESTILOS DE COMPONENTES.
+  Cada bloque corresponde a un componente de la carpeta components/.
+  Los nombres siguen el patrón "bloque__elemento--variante" (BEM),
+  así es fácil saber a qué pieza pertenece cada regla.
+*/
+
+/* ---------- Botón (estilo "btn-primary" del sitio web) ---------- */
+.button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-button);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-button-hover);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ---------- Formulario (TaskForm) ---------- */
+.task-form {
+  display: flex;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 440px;
+}
+
+.task-form__input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.task-form__input:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+/* ---------- Columna (TaskColumn) ---------- */
+.column {
+  min-height: 200px;
+  padding: var(--space-4);
+  border: 2px dashed transparent;
+  border-radius: var(--radius-lg);
+  background: var(--color-column);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+/* Resalta la columna cuando se arrastra una tarjeta encima */
+.column--over {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-glow);
+}
+
+.column__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding: 0 var(--space-1);
+}
+
+.column__title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.column__count {
+  min-width: 26px;
+  padding: 2px var(--space-2);
+  border-radius: 100px;
+  background: var(--color-primary-glow);
+  border: 1px solid var(--color-primary-border);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: center;
+}
+
+.column__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.column__empty {
+  padding: var(--space-6) 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* ---------- Tarjeta (TaskCard) ---------- */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: 14px var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  cursor: grab;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, opacity 0.15s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+/* Mientras se arrastra, la tarjeta original queda semitransparente */
+.task-card--dragging {
+  opacity: 0.4;
+}
+
+.task-card__check {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-done);
+  cursor: pointer;
+}
+
+.task-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-card__title {
+  font-weight: 600;
+  word-wrap: break-word;
+}
+
+.task-card__description {
+  margin-top: 2px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Tarea completada: borde verde del logo, texto tachado y atenuado */
+.task-card--done {
+  border-left-color: var(--color-done);
+}
+
+.task-card--done .task-card__title {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}

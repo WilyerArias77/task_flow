@@ -1,0 +1,9 @@
+/*
+  ARCHIVO PRINCIPAL DE ESTILOS.
+  Solo reúne los demás archivos de estilo en el orden correcto.
+  main.jsx importa este archivo una única vez para toda la app.
+*/
+@import './theme.css';      /* 1. colores, tamaños y fuentes (variables) */
+@import './base.css';       /* 2. estilos generales del documento */
+@import './layout.css';     /* 3. estructura: header, página, tablero */
+@import './components.css'; /* 4. piezas: formulario, columnas, tarjetas */

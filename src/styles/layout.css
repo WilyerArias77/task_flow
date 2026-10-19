@@ -1,0 +1,118 @@
+/*
+  ESTILOS DE ESTRUCTURA (layout).
+  Controlan cómo se acomodan las grandes zonas de la pantalla:
+  encabezado, área de contenido, cabecera de la página y tablero.
+*/
+
+/* Contenedor general */
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout__content {
+  flex: 1;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+/* Encabezado: fondo translúcido con desenfoque, igual que el sitio web */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(248, 249, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header__inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.header__logo {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header__divider {
+  width: 1px;
+  height: 36px;
+  background: var(--color-border);
+}
+
+.header__title {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-navy);
+  line-height: 1.2;
+}
+
+.header__tagline {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Cabecera de la página: título a la izquierda, formulario a la derecha */
+.page__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.page__title {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.page__subtitle {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Tablero: columnas apiladas en móvil, lado a lado en pantallas grandes */
+.board {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (min-width: 720px) {
+  .board {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* En móvil se reduce el encabezado para no saturarlo */
+@media (max-width: 480px) {
+  .layout__content {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .header__inner {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .header__logo {
+    height: 52px;
+  }
+
+  .header__tagline {
+    display: none;
+  }
+}

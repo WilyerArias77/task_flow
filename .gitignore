@@ -1,0 +1,22 @@
+# Archivos que Git debe ignorar (no se suben al repositorio)
+
+# Dependencias instaladas por npm (se regeneran con "npm install")
+node_modules/
+
+# Carpeta generada al compilar la app (se regenera con "npm run build")
+dist/
+
+# Registros de errores
+*.log
+npm-debug.log*
+
+# Archivos del sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Variables de entorno (pueden contener secretos)
+.env
+.env.*
