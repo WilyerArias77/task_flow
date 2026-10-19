@@ -10,9 +10,10 @@ import TaskForm from '../components/TaskForm.jsx';
 import TaskToolbar from '../components/TaskToolbar.jsx';
 import SelectionBanner from '../components/SelectionBanner.jsx';
 import TaskBoard from '../components/TaskBoard.jsx';
+import ErrorBanner from '../components/ErrorBanner.jsx';
 
-export default function HomePage() {
-  const tasks = useTasks();
+export default function HomePage({ userId }) {
+  const tasks = useTasks(userId);
   const dragAndDrop = useDragAndDrop(tasks.moveTask);
   const selection = useSelectionMode({
     onDelete: tasks.deleteTasks,
@@ -25,8 +26,14 @@ export default function HomePage() {
     tasks.setFrequency(frequencyId);
   };
 
+  if (tasks.status === 'loading') {
+    return <p className="page__loading">Cargando tus tareas…</p>;
+  }
+
   return (
     <section className="page">
+      {tasks.error && <ErrorBanner message={tasks.error} onClose={tasks.dismissError} />}
+
       <FrequencySelector
         options={tasks.frequencies}
         selectedId={tasks.currentFrequency.id}

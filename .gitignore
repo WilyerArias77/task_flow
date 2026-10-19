@@ -20,3 +20,4 @@ Thumbs.db
 # Variables de entorno (pueden contener secretos)
 .env
 .env.*
+!.env.example

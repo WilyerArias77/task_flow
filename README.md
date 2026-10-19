@@ -17,11 +17,23 @@ Esta es la **versión punto cero**: el punto de partida del proyecto.
 - **Gráfico de cumplimiento**: % cumplido de la lista actual, desglose cumplidas / pendientes / vencidas
   y comparación entre diarias, mensuales y anuales.
 
-> Los cambios se pierden al recargar la página: todavía no hay backend.
+- **Cuentas de usuario** (correo y contraseña) con Supabase Auth: registro con aceptación de la
+  política de datos, inicio de sesión, recuperación de contraseña y cierre de sesión.
+- Las tareas se **guardan en la base de datos** (Supabase). Cada usuario solo ve las suyas.
+  Al registrarse recibe 16 tareas de ejemplo.
 
 ## Cómo ejecutarla
 
 Necesitas tener [Node.js](https://nodejs.org) instalado (versión 20 o superior).
+
+1. **Base de datos (una sola vez):** en tu proyecto de Supabase, abre *SQL Editor*, pega el contenido de
+   `supabase/migrations/20261019000000_taskflow_schema.sql` y ejecútalo. Crea las tablas
+   `taskflow_profiles` y `taskflow_tasks` con seguridad por fila (RLS).
+2. **Direcciones permitidas:** en *Authentication → URL Configuration → Redirect URLs* agrega la
+   dirección de la app (en desarrollo: `http://localhost:5173`).
+3. **Configuración local:** copia `.env.example` como `.env.local` y completa la *Project URL* y la
+   *Publishable key* (Project Settings → API Keys). Nunca uses la clave secreta.
+4. Instala y arranca:
 
 ```bash
 npm install      # instala las dependencias (solo la primera vez)
@@ -54,8 +66,8 @@ src/
 ├── pages/              Pantallas: conectan la lógica con los componentes
 ├── components/         Piezas visuales (sin reglas de negocio)
 ├── logic/              TODA la lógica de la app
-│   ├── data/           Datos de ejemplo (mock)
-│   ├── rules/          Reglas de negocio (tareas, fechas, gráfico)
+│   ├── services/       Conexión con Supabase (cuentas y tareas)
+│   ├── rules/          Reglas de negocio (tareas, fechas, gráfico, cuentas)
 │   └── hooks/          Estado y comportamiento (tareas, formularios, fechas,
 │                       modos editar/eliminar, arrastre)
 ├── styles/             TODOS los estilos de la app

@@ -8,3 +8,4 @@
 @import './layout.css';     /* 3. estructura: header, página, tablero */
 @import './components.css'; /* 4. piezas: formulario, columnas, tarjetas */
 @import './chart.css';      /* 5. gráfico de cumplimiento */
+@import './auth.css';       /* 6. acceso, carga, usuario y avisos */

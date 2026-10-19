@@ -24,34 +24,41 @@ export function isValidTitle(title) {
   return title.trim().length > 0;
 }
 
-// Crea una tarea nueva (siempre empieza como pendiente).
-export function createTask({ title, dueDate = null, frequency = DEFAULT_FREQUENCY }) {
+// Posición para una tarea nueva: después de la última.
+// La "posición" guarda el orden que el usuario arma con el drag and drop.
+export function getNextPosition(tasks) {
+  return tasks.reduce((max, task) => Math.max(max, task.position), 0) + 1;
+}
+
+// Crea una tarea nueva (siempre empieza como pendiente, al final de la lista).
+// El id se genera aquí para poder mostrarla al instante, antes de guardarla.
+export function createTask(tasks, { title, dueDate = null, frequency = DEFAULT_FREQUENCY }) {
   return {
-    id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: crypto.randomUUID(),
     title: title.trim(),
     description: '',
     dueDate,
     frequency,
     completed: false,
+    position: getNextPosition(tasks),
   };
 }
 
-// Agrega una tarea al final de la lista.
-export function addTask(tasks, data) {
-  if (!isValidTitle(data.title)) return tasks;
-  return [...tasks, createTask(data)];
+// Limpia los cambios antes de aplicarlos (quita espacios sobrantes).
+// Devuelve null si los cambios no son válidos (por ejemplo, título vacío).
+export function normalizeTaskChanges(changes) {
+  if (changes.title !== undefined && !isValidTitle(changes.title)) return null;
+  const normalized = { ...changes };
+  if (changes.title !== undefined) normalized.title = changes.title.trim();
+  if (changes.description !== undefined) normalized.description = changes.description.trim();
+  return normalized;
 }
 
 // Sobrescribe los datos de una tarea (título, descripción, fecha o lista).
 export function updateTask(tasks, taskId, changes) {
-  if (changes.title !== undefined && !isValidTitle(changes.title)) return tasks;
-  return tasks.map((task) => {
-    if (task.id !== taskId) return task;
-    const updated = { ...task, ...changes };
-    if (changes.title !== undefined) updated.title = changes.title.trim();
-    if (changes.description !== undefined) updated.description = changes.description.trim();
-    return updated;
-  });
+  const normalized = normalizeTaskChanges(changes);
+  if (!normalized) return tasks;
+  return tasks.map((task) => (task.id === taskId ? { ...task, ...normalized } : task));
 }
 
 // Elimina todas las tareas cuyos ids estén en la lista.
@@ -88,19 +95,24 @@ export function isOverdue(task, today = todayISO()) {
 //   - beforeTaskId: si se suelta encima de otra tarjeta, se coloca antes de ella;
 //                   si es null, se coloca al final de la columna.
 // Moverla a "Completadas" la marca como completada, y viceversa.
+// La nueva posición queda justo entre sus vecinas, así solo cambia esta tarea.
 export function moveTask(tasks, taskId, columnId, beforeTaskId = null) {
   const task = tasks.find((t) => t.id === taskId);
   const column = COLUMNS.find((col) => col.id === columnId);
   if (!task || !column) return tasks;
 
-  const movedTask = { ...task, completed: column.completed };
   const rest = tasks.filter((t) => t.id !== taskId);
+  const beforeIndex = beforeTaskId ? rest.findIndex((t) => t.id === beforeTaskId) : -1;
+  const targetIndex = beforeIndex === -1 ? rest.length : beforeIndex;
 
-  const targetIndex = beforeTaskId
-    ? rest.findIndex((t) => t.id === beforeTaskId)
-    : -1;
+  const previous = rest[targetIndex - 1];
+  const next = rest[targetIndex];
+  let position = 0;
+  if (previous && next) position = (previous.position + next.position) / 2;
+  else if (previous) position = previous.position + 1;
+  else if (next) position = next.position - 1;
 
-  if (targetIndex === -1) return [...rest, movedTask];
+  const movedTask = { ...task, completed: column.completed, position };
   return [...rest.slice(0, targetIndex), movedTask, ...rest.slice(targetIndex)];
 }
 
