@@ -18,8 +18,8 @@ const BUTTONS = {
   reset: 'Guardar contraseña',
 };
 
-export default function AuthPage({ initialMode, initialError, onPasswordUpdated }) {
-  const form = useAuthForm({ initialMode, initialError, onPasswordUpdated });
+export default function AuthPage({ initialMode, onPasswordUpdated }) {
+  const form = useAuthForm({ initialMode, onPasswordUpdated });
   const { mode, fields } = form;
 
   return (

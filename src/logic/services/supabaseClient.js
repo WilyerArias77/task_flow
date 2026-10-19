@@ -11,9 +11,4 @@ const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 // Permite mostrar un aviso claro si falta la configuración
 export const isSupabaseConfigured = Boolean(url && publishableKey);
 
-// Dirección con la que se abrió la app, guardada ANTES de que Supabase la
-// limpie. Sirve para saber si el usuario llegó desde un enlace de correo
-// (por ejemplo "restablecer contraseña") o si ese enlace falló.
-export const initialUrlHash = typeof window === 'undefined' ? '' : window.location.hash;
-
 export const supabase = isSupabaseConfigured ? createClient(url, publishableKey) : null;
